@@ -1,20 +1,28 @@
 import { useState } from 'react';
-import { useAuth } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import Toast from './Toast';
 
 export default function LoginForm({ isLoading, setIsLoading, onForgotPassword }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // ✅ toggle state
+  const [showPassword, setShowPassword] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('info');
-  const { login } = useAuth();
+
   const navigate = useNavigate();
 
+  const triggerToast = (message, type = 'info') => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
+  // ✅ MOCK LOGIN MODE ONLY — no backend, no API
   const handleLogin = async (e) => {
     e.preventDefault();
+
     if (!username || !password) {
       triggerToast('Please fill in both fields.', 'error');
       return;
@@ -22,28 +30,18 @@ export default function LoginForm({ isLoading, setIsLoading, onForgotPassword })
 
     setIsLoading(true);
 
-    try {
-      const result = await login(username, password);
-      if (result.success) {
-        triggerToast('Login successful!', 'success');
-        setTimeout(() => {
-          navigate('/home');
-        }, 1200);
-      } else {
-        triggerToast(result.message || 'Invalid username or password.', 'error');
-      }
-    } catch (err) {
-      triggerToast(`Network error: ${err.message}`, 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // ⏳ simulate network delay
+    setTimeout(() => {
+      triggerToast('Login successful! (Mock Mode)', 'success');
 
-  const triggerToast = (message, type = 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+       localStorage.setItem("isAuthenticated", "true");
+
+      setTimeout(() => {
+        navigate('/history');
+      }, 800);
+
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
@@ -68,7 +66,7 @@ export default function LoginForm({ isLoading, setIsLoading, onForgotPassword })
         <div className="relative mt-1">
           <input
             id="password"
-            type={showPassword ? 'text' : 'password'} // ✅ toggle type
+            type={showPassword ? 'text' : 'password'}
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -76,7 +74,6 @@ export default function LoginForm({ isLoading, setIsLoading, onForgotPassword })
             className="w-full p-3 pr-16 border border-green-700 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700"
           />
 
-          {/* SHOW/HIDE BUTTON */}
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}

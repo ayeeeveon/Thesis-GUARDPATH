@@ -1,39 +1,45 @@
 # routes/auth.py
+"""
 from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 import logging
 
-auth_bp = Blueprint('auth', __name__)
-CORS(auth_bp)  # enable CORS for this blueprint
-
-# Logging
+# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Hardcoded demo user
-DEMO_USER = {
-    "id": 1,
-    "username": "admin",
-    "password": "password123"  # plaintext for demo only
+auth_bp = Blueprint('auth', __name__)
+CORS(auth_bp)
+
+# Hard-coded credential using email
+HARDCODED_USER = {
+    "email": "admin@example.com",
+    "password": "password123",  # plaintext password
+    "id": 1
 }
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     logger.info(f"🔒 Received login request: {data}")
-
-    username = data.get('username', '').strip()
+    
+    email = data.get('email', '').strip()
     password = data.get('password', '').strip()
-
-    if not username or not password:
-        return jsonify({"message": "Username and password are required"}), 400
-
-    if username != DEMO_USER['username'] or password != DEMO_USER['password']:
-        return jsonify({"message": "Invalid username or password"}), 401
-
+    
+    if not email or not password:
+        logger.error("❌ Missing credentials")
+        return jsonify({"message": "Email and password are required"}), 400
+    
+    # Check against hard-coded credential
+    if email != HARDCODED_USER["email"] or password != HARDCODED_USER["password"]:
+        logger.error(f"❌ Invalid login attempt for email: {email}")
+        return jsonify({"message": "Invalid email or password"}), 401
+    
+    logger.info(f"✅ User logged in successfully: {email}")
     return jsonify({
         "user": {
-            "id": DEMO_USER['id'],
-            "username": DEMO_USER['username']
+            "id": HARDCODED_USER["id"],
+            "email": HARDCODED_USER["email"]
         }
     })
+"""

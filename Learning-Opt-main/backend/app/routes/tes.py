@@ -1,3 +1,4 @@
+"""
 import importlib
 
 required = [
@@ -21,3 +22,4 @@ if missing:
     print("Install with: pip install " + " ".join(missing))
 else:
     print("✅ All required libraries are available")
+    """

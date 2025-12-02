@@ -1,4 +1,5 @@
 # config.py
+"""
 import os
 import mysql.connector
 from mysql.connector import pooling
@@ -62,3 +63,4 @@ def execute_query(query, params=None):
     finally:
         cursor.close()
         connection.close()
+        """
