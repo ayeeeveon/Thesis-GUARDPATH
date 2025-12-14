@@ -8,6 +8,7 @@ import {
 
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
+import Map from "./pages/Map";
 import History from "./pages/History";
 
 // SIMPLE AUTH CHECK USING LOCALSTORAGE
@@ -26,7 +27,15 @@ const App = () => (
       {/* Login Page */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* Protected: History */}
+      {/* Protected: Map */}
+      <Route
+        path="/map"
+        element={
+          <PrivateRoute>
+            <Map />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/history"
         element={
@@ -35,9 +44,8 @@ const App = () => (
           </PrivateRoute>
         }
       />
-
       {/* Redirect any unknown URL to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/map" />} />
 
     </Routes>
   </Router>

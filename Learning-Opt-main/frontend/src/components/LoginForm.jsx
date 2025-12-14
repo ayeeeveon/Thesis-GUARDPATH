@@ -37,7 +37,7 @@ export default function LoginForm({ isLoading, setIsLoading, onForgotPassword })
        localStorage.setItem("isAuthenticated", "true");
 
       setTimeout(() => {
-        navigate('/history');
+        navigate('/map');
       }, 800);
 
       setIsLoading(false);
